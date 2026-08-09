@@ -71,6 +71,14 @@ export default function IssueList({ issues }: IssueListProps) {
 
   return (
     <div className="flex flex-col gap-6">
+      {groups.length === 0 && (
+        <div className="border border-line bg-surface px-6 py-16 text-center">
+          <p className="m-0 text-body text-ink-2">未发现需要处理的问题</p>
+          <p className="m-0 mt-2 text-small text-ink-3">
+            这份文档通过了当前启用的检查项
+          </p>
+        </div>
+      )}
       {groups.map((group) => (
         <section key={group.severity}>
           <h3 className="mb-3 flex items-center gap-2 text-h3 font-medium text-ink">
@@ -101,10 +109,10 @@ export default function IssueList({ issues }: IssueListProps) {
                       className="inline-block h-2 w-2 shrink-0 rounded-full"
                       style={{ backgroundColor: group.meta.color }}
                     />
-                    <span className="flex-1 truncate text-body">
+                    <span className="min-w-0 flex-1 break-words text-body">
                       {issue.title}
                     </span>
-                    <span className="shrink-0 font-mono text-caption text-ink-3">
+                    <span className="max-w-[28%] shrink-0 break-words text-right font-mono text-caption text-ink-3 max-md:max-w-[34%]">
                       {issue.location}
                     </span>
                     {isOpen ? (
@@ -124,14 +132,14 @@ export default function IssueList({ issues }: IssueListProps) {
                       <p className="mb-3 text-small text-ink-3">
                         {issue.summary}
                       </p>
-                      <div className="flex gap-6">
+                      <div className="flex gap-6 max-md:flex-col max-md:gap-4">
                         <div className="flex-1">
                           <p className="mb-2 text-caption text-ink-3">原文</p>
                           <p className="m-0 text-small leading-[1.7] text-ink whitespace-pre-wrap">
                             <OriginalText parts={parts} />
                           </p>
                         </div>
-                        <div className="w-px shrink-0 bg-line" />
+                        <div className="w-px shrink-0 bg-line max-md:h-px max-md:w-full" />
                         <div className="flex-1">
                           <p className="mb-2 text-caption text-ink-3">建议</p>
                           <p className="m-0 text-small leading-[1.7] text-ink whitespace-pre-wrap">

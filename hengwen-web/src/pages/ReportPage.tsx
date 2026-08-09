@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "antd";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import ScoreCard from "../components/ScoreCard";
 import IssueList from "../components/IssueList";
 import StatusTag from "../components/StatusTag";
@@ -24,8 +25,16 @@ export default function ReportPage() {
 
   return (
     <div className="flex flex-col gap-8">
+      <Button
+        type="link"
+        icon={<ArrowLeftOutlined aria-hidden="true" />}
+        className="self-start px-0"
+        onClick={() => navigate("/history")}
+      >
+        返回历史记录
+      </Button>
       <header className="flex flex-col gap-3">
-        <h1 className="m-0 font-serif text-display leading-[1.35] text-ink">
+        <h1 className="m-0 break-words font-serif text-display leading-[1.35] text-ink">
           {title}
         </h1>
         <p className="m-0 text-small text-ink-2">

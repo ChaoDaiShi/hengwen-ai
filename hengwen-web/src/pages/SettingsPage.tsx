@@ -1,4 +1,5 @@
 import { App, Button, Form, Input, Select, Switch } from "antd";
+import { useEffect } from "react";
 import type { Settings } from "../types/report";
 import { useAppStore } from "../store/useAppStore";
 
@@ -14,6 +15,10 @@ export default function SettingsPage() {
   const settings = useAppStore((s) => s.settings);
   const updateSettings = useAppStore((s) => s.updateSettings);
   const [form] = Form.useForm<Settings>();
+
+  useEffect(() => {
+    form.setFieldsValue(settings);
+  }, [form, settings]);
 
   const onFinish = (values: Settings) => {
     updateSettings(values);
