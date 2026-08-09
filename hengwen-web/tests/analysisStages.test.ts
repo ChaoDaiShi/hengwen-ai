@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { ANALYSIS_STAGES, progressFor, stageLabelFor } from "./analysisStages";
+import {
+  ANALYSIS_STAGES,
+  progressFor,
+  stageLabelFor,
+} from "../src/lib/analysisStages";
 
 describe("analysisStages", () => {
   it("defines at least four distinct stages", () => {

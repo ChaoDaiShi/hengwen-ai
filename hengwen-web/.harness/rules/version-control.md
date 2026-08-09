@@ -19,6 +19,7 @@ commit 和 push 都是完成条件，不是可选的后续建议。只完成本�
 - 提交前必须运行 `git diff --staged --check` 和 `git diff --staged`。
 - 不得暂存、修改、还原或删除不属于当前任务的文件。
 - 不提交密钥、`.env`、本地运行报告、构建产物或依赖目录。
+- 锁文件只提交 `pnpm-lock.yaml`；不提交 `package-lock.json`、`yarn.lock`、`bun.lock`、`npm-shrinkwrap.json`。
 
 ## Commit
 

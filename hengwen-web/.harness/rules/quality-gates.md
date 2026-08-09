@@ -15,9 +15,9 @@
 在 `hengwen-web/` 运行：
 
 ```bash
-npm run lint
-npx prettier --check <changed-files...>
-npm run build
+pnpm run lint
+pnpm exec prettier --check <changed-files...>
+pnpm run build
 ```
 
 - `lint`：每次代码改动必跑。
@@ -27,14 +27,11 @@ npm run build
 
 ## Tests
 
-当前项目没有 `npm run test` 脚本，因此遵循以下规则：
+测试统一放在 `tests/` 目录（vitest 配置 `vitest.config.ts` 显式只收集 `tests/**/*.test.ts`）。测试脚本已存在：
 
-1. 若任务仅修改现有静态文案或样式，可记录“无测试脚本”，使用 lint、build 和 UI 回归作为证据。
-2. 若新增或修改可独立测试的业务逻辑、状态转换、数据适配或缺陷修复，必须在同一任务中增加合适的测试和 `test` 脚本；随后 `npm run test` 成为强制门禁。
-3. 若任务明确要求测试，缺少测试基础设施不构成跳过理由；应将新增测试能力纳入任务。因权限或依赖下载无法完成时，状态为 `BLOCKED`，不得标记通过。
-4. 已存在测试脚本后，每次代码改动都必须运行 `npm run test`；不得在后续任务中退回“无测试脚本”的例外。
-
-测试应覆盖行为和边界，不以快照或实现细节测试代替关键断言。
+1. 每次代码改动都必须运行 `pnpm run test`，不得退回“无测试脚本”的例外。
+2. 新增或修改可独立测试的业务逻辑、状态转换、数据适配或缺陷修复，必须同步补充测试。
+3. 测试应覆盖行为和边界，不以快照或实现细节测试代替关键断言。
 
 ## Targeted Checks
 

@@ -1,5 +1,12 @@
 # Frontend Rules
 
+## Tooling
+
+- 包管理器统一为 pnpm（`package.json` 已声明 `packageManager: pnpm`），安装/新增依赖一律使用 `pnpm install` / `pnpm add`；禁止使用 npm、yarn、bun 安装依赖。
+- 依赖锁定文件只维护 `pnpm-lock.yaml`，随提交更新；发现其他包管理器锁文件（`package-lock.json`、`bun.lock` 等）不得使用，应移除并切换为 pnpm。
+- 新增依赖前先检查是否已有等价依赖；安装后必须跑 `pnpm run build` 与 `pnpm run test` 验证。
+- 运行项目脚本统一使用 `pnpm run <script>`（如 `pnpm run dev`、`pnpm run lint`），传递参数用 `pnpm run <script> -- <args>`。
+
 ## Product And Visual Direction
 
 - 以 `docs/ui设计文档.md` 为产品视觉基准：严谨、克制、安静、可信赖。
