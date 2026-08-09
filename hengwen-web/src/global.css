@@ -1,0 +1,167 @@
+@import "tailwindcss";
+
+/*
+  衡文 设计 Token（docs/ui设计文档.md §10）
+  全部组件样式通过 Tailwind 工具类实现；本文件只承载主题变量、基线与少量框架覆写。
+*/
+
+:root {
+  /* 色彩 */
+  --bg-paper: #fbfaf8;
+  --bg-surface: #ffffff;
+  --bg-subtle: #f4f2ee;
+  --bg-hover: #f0eee9;
+  --text-primary: #1c1b19;
+  --text-secondary: #5c5953;
+  --text-tertiary: #8a867e;
+  --text-disabled: #b4b0a8;
+  --border-default: #e6e3dd;
+  --border-strong: #d4d0c8;
+  --accent: #3e5c76;
+  --accent-hover: #334d63;
+  --accent-bg: rgba(62, 92, 118, 0.08);
+  --success: #5b7261;
+  --warning: #a9813b;
+  --error: #a34a3e;
+  --error-bg: rgba(163, 74, 62, 0.08);
+
+  /* 圆角 / 阴影 */
+  --hw-shadow-paper:
+    0 1px 2px rgba(28, 27, 25, 0.04), 0 4px 12px rgba(28, 27, 25, 0.06);
+
+  /* 字体 */
+  --hw-font-sans:
+    "Inter", "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", system-ui,
+    sans-serif;
+  --hw-font-serif: "Source Han Serif SC", "Noto Serif SC", "Songti SC", serif;
+  --hw-font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+
+  color-scheme: light;
+}
+
+/* 深色模式 —— §11 简则，变量按明度映射 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-paper: #17161a;
+    --bg-surface: #1e1d22;
+    --bg-subtle: #24232a;
+    --bg-hover: #2a2931;
+    --text-primary: #edeae4;
+    --text-secondary: #b8b3aa;
+    --text-tertiary: #7d7870;
+    --text-disabled: #56524c;
+    --border-default: #32302f;
+    --border-strong: #45423f;
+    --accent: #7d9db8;
+    --accent-hover: #9bb6cc;
+    --accent-bg: rgba(125, 157, 184, 0.14);
+    --success: #7d9a86;
+    --warning: #c2a262;
+    --error: #c46758;
+    --error-bg: rgba(196, 103, 88, 0.14);
+    color-scheme: dark;
+  }
+}
+
+/*
+  Tailwind token 映射（inline：工具类最终引用上述 CSS 变量，
+  使深色模式下的变量切换自动传导到所有工具类）。
+*/
+@theme inline {
+  --color-paper: var(--bg-paper);
+  --color-surface: var(--bg-surface);
+  --color-subtle: var(--bg-subtle);
+  --color-hover: var(--bg-hover);
+  --color-ink: var(--text-primary);
+  --color-ink-2: var(--text-secondary);
+  --color-ink-3: var(--text-tertiary);
+  --color-ink-4: var(--text-disabled);
+  --color-line: var(--border-default);
+  --color-line-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-bg);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-error-soft: var(--error-bg);
+
+  --font-sans: var(--hw-font-sans);
+  --font-serif: var(--hw-font-serif);
+  --font-mono: var(--hw-font-mono);
+
+  --radius-md: 8px;
+
+  --shadow-paper: var(--hw-shadow-paper);
+
+  /* 字号阶梯（§3.2，1.25 比例） */
+  --text-display: 34px;
+  --text-display--line-height: 1.35;
+  --text-h1: 26px;
+  --text-h1--line-height: 1.45;
+  --text-h2: 20px;
+  --text-h2--line-height: 1.4;
+  --text-h3: 16px;
+  --text-h3--line-height: 1.5;
+  --text-body: 15px;
+  --text-body--line-height: 1.7;
+  --text-small: 13px;
+  --text-small--line-height: 1.6;
+  --text-caption: 12px;
+  --text-caption--line-height: 1.5;
+}
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100svh;
+    background: var(--bg-paper);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.7;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::placeholder {
+    color: var(--text-tertiary);
+  }
+}
+/* antd Upload.Dragger —— 大留白虚线上传区（§6 Upload）
+   注：必须置于层外，避免被 antd 无层样式覆盖。 */
+.upload-zone.ant-upload-wrapper .ant-upload-drag {
+  background: var(--bg-surface);
+  border: 1.5px dashed var(--border-strong);
+  border-radius: 8px;
+  padding: 64px 24px;
+  transition:
+    border-color 150ms ease-out,
+    background-color 150ms ease-out;
+}
+
+.upload-zone.ant-upload-wrapper .ant-upload-drag:hover,
+.upload-zone.ant-upload-wrapper .ant-upload-drag.ant-upload-drag-hover {
+  border-color: var(--accent);
+}
+
+.upload-zone.ant-upload-wrapper .ant-upload-drag.ant-upload-drag-hover {
+  background: var(--accent-bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0ms !important;
+  }
+}
