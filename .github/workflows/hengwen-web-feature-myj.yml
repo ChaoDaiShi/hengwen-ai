@@ -31,10 +31,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.12.0
+          node-version: 22.14.0
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --fetch-retries=3 --fetch-timeout=120000
 
       - name: Lint
         run: pnpm run lint
