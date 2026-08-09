@@ -77,10 +77,10 @@ jobs:
               owner,
               repo,
               base: "main",
-              head: process.env.FEATURE_SHA,
+              head: "feature/myj",
               commit_message: "merge: feature/myj into main",
             });
 
-            if (!result.data.merged) {
+            if (result.data.merged === false) {
               core.setFailed(result.data.message || "GitHub did not merge feature/myj into main.");
             }
