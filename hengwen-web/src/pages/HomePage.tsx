@@ -3,18 +3,19 @@ import UploadZone from "../components/UploadZone";
 import { useAppStore } from "../store/useAppStore";
 import { VERDICT_LABELS } from "../lib/verdict";
 import { formatDateTime } from "../lib/format";
+import { fileTypeForName } from "../lib/file";
 
 export default function HomePage() {
   const navigate = useNavigate();
   const startAnalysis = useAppStore((s) => s.startAnalysis);
   const reports = useAppStore((s) => s.reports);
+  const analysis = useAppStore((s) => s.analysis);
 
   const recent = reports.slice(0, 5);
 
   const handleFile = (file: File) => {
-    const dot = file.name.lastIndexOf(".");
-    const fileType =
-      dot >= 0 ? (file.name.slice(dot) as ".docx" | ".pdf" | ".md") : ".docx";
+    const fileType = fileTypeForName(file.name);
+    if (!fileType) return;
     startAnalysis({ filename: file.name, fileType });
     navigate("/analyzing");
   };
@@ -26,7 +27,27 @@ export default function HomePage() {
       </section>
 
       <section className="mx-auto w-full max-w-[640px]">
-        <UploadZone onValidFile={handleFile} />
+        {analysis && (
+          <div className="mb-6 flex items-center justify-between gap-4 border border-line bg-surface px-5 py-4 max-md:items-start">
+            <div className="min-w-0">
+              <p className="m-0 text-body text-ink">有一项检查正在进行</p>
+              <p
+                className="m-0 truncate text-small text-ink-3"
+                title={analysis.filename}
+              >
+                {analysis.filename}
+              </p>
+            </div>
+            <button
+              type="button"
+              className="shrink-0 border-0 bg-transparent px-0 py-1 text-small font-medium text-accent underline decoration-transparent underline-offset-4 transition-[color,text-decoration-color] duration-150 hover:text-accent-hover hover:decoration-current"
+              onClick={() => navigate("/analyzing")}
+            >
+              继续检查
+            </button>
+          </div>
+        )}
+        <UploadZone onValidFile={handleFile} disabled={Boolean(analysis)} />
       </section>
 
       <section className="mt-16" aria-label="最近检查">
@@ -45,7 +66,7 @@ export default function HomePage() {
                   <span className="flex-1 truncate text-body">
                     {report.filename}
                   </span>
-                  <span className="hidden shrink-0 text-small text-ink-3 max-md:hidden">
+                  <span className="hidden shrink-0 text-small text-ink-3 sm:inline">
                     {formatDateTime(report.checkedAt)} ·{" "}
                     {VERDICT_LABELS[report.verdict]}
                   </span>

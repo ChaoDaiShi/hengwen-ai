@@ -1,16 +1,7 @@
 import { App, Upload } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import type { UploadProps } from "antd";
-
-const ACCEPTED_EXTENSIONS = [".docx", ".pdf", ".md"] as const;
-
-type AcceptedExtension = (typeof ACCEPTED_EXTENSIONS)[number];
-
-function extensionOf(name: string): string | null {
-  const dot = name.lastIndexOf(".");
-  if (dot < 0) return null;
-  return name.slice(dot).toLowerCase();
-}
+import { ACCEPTED_FILE_TYPES, fileTypeForName } from "../lib/file";
 
 interface UploadZoneProps {
   onValidFile: (file: File) => void;
@@ -19,11 +10,11 @@ interface UploadZoneProps {
 
 export default function UploadZone({ onValidFile, disabled }: UploadZoneProps) {
   const { message } = App.useApp();
-  const acceptAttr = ACCEPTED_EXTENSIONS.join(",");
+  const acceptAttr = ACCEPTED_FILE_TYPES.join(",");
 
   const beforeUpload: UploadProps["beforeUpload"] = (file) => {
-    const ext = extensionOf(file.name);
-    if (!ext || !ACCEPTED_EXTENSIONS.includes(ext as AcceptedExtension)) {
+    const fileType = fileTypeForName(file.name);
+    if (!fileType) {
       message.error("仅支持 .docx / .pdf / .md 文件");
       return Upload.LIST_IGNORE;
     }

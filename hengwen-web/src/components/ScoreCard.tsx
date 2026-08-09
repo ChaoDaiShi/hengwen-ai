@@ -17,7 +17,7 @@ export default function ScoreCard({ score, verdict }: ScoreCardProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-baseline gap-2">
-        <span className="font-mono leading-[1.1] text-[clamp(48px,6vw,72px)] font-normal text-ink">
+        <span className="font-mono text-[72px] font-normal leading-[1.1] text-ink max-md:text-[56px]">
           {score}
         </span>
         <span className="text-small text-ink-3">/ 100</span>

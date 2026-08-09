@@ -134,6 +134,23 @@
   ::placeholder {
     color: var(--text-tertiary);
   }
+
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
 }
 /* antd Upload.Dragger —— 大留白虚线上传区（§6 Upload）
    注：必须置于层外，避免被 antd 无层样式覆盖。 */

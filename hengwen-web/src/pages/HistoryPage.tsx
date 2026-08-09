@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Table } from "antd";
+import { Empty, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { Report, Verdict } from "../types/report";
 import StatusTag from "../components/StatusTag";
@@ -7,8 +7,8 @@ import { useAppStore } from "../store/useAppStore";
 import { formatDateTime } from "../lib/format";
 
 const emptyNode = (
-  <div className="py-24 text-center">
-    <p className="m-0 text-body text-ink-3">尚无检查记录</p>
+  <div className="py-16 text-center">
+    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="尚无检查记录" />
   </div>
 );
 
@@ -31,6 +31,7 @@ export default function HistoryPage() {
       dataIndex: "fileType",
       key: "fileType",
       width: 100,
+      responsive: ["md"],
       render: (value: Report["fileType"]) => (
         <span className="font-mono text-small text-ink-2">{value}</span>
       ),
@@ -56,6 +57,7 @@ export default function HistoryPage() {
       dataIndex: "checkedAt",
       key: "checkedAt",
       width: 180,
+      responsive: ["lg"],
       render: (value: string) => (
         <span className="text-small text-ink-2">{formatDateTime(value)}</span>
       ),
@@ -77,7 +79,15 @@ export default function HistoryPage() {
         }}
         onRow={(record) => ({
           onClick: () => navigate(`/report/${record.id}`),
-          className: "cursor-pointer",
+          onKeyDown: (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              navigate(`/report/${record.id}`);
+            }
+          },
+          tabIndex: 0,
+          className:
+            "cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent",
         })}
       />
     </div>

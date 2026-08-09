@@ -10,14 +10,14 @@ export default function AppLayout() {
   return (
     <div className="flex min-h-svh flex-col">
       <header className="border-b border-line bg-paper">
-        <div className="mx-auto flex h-16 w-full max-w-[960px] items-center justify-between gap-8 px-12 max-md:h-14 max-md:px-6 max-md:gap-6">
+        <div className="mx-auto flex h-16 w-full max-w-[960px] items-center justify-between gap-8 px-12 max-md:h-14 max-md:gap-4 max-md:px-5">
           <NavLink
             to="/"
-            className="font-serif text-[20px] font-medium leading-[1.4] text-ink"
+            className="shrink-0 font-serif text-[20px] font-medium leading-[1.4] text-ink"
           >
             衡文
           </NavLink>
-          <nav className="flex gap-8 max-md:gap-6" aria-label="主导航">
+          <nav className="flex gap-8 max-md:gap-4" aria-label="主导航">
             {NAV_ITEMS.map((item) => (
               <NavLink
                 key={item.to}

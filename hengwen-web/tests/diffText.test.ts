@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { diffText } from "./diffText";
+import { diffText } from "../src/lib/diffText";
 
 describe("diffText", () => {
   it("returns empty for two empty strings", () => {

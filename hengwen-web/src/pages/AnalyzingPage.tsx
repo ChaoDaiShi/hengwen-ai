@@ -1,7 +1,7 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { useAppStore } from "../store/useAppStore";
-import { ANALYSIS_STAGES, stageLabelFor } from "../lib/analysisStages";
+import { stageLabelFor } from "../lib/analysisStages";
 
 export default function AnalyzingPage() {
   const navigate = useNavigate();
@@ -10,25 +10,7 @@ export default function AnalyzingPage() {
   useEffect(() => {
     if (!useAppStore.getState().analysis) {
       navigate("/", { replace: true });
-      return;
     }
-
-    const timer = window.setInterval(() => {
-      const state = useAppStore.getState();
-      if (!state.analysis) {
-        window.clearInterval(timer);
-        return;
-      }
-      if (state.analysis.stageIndex >= ANALYSIS_STAGES.length - 1) {
-        window.clearInterval(timer);
-        const report = useAppStore.getState().completeAnalysis();
-        if (report) navigate(`/report/${report.id}`, { replace: true });
-      } else {
-        state.advanceAnalysis();
-      }
-    }, 900);
-
-    return () => window.clearInterval(timer);
   }, [navigate]);
 
   if (!analysis) return null;
@@ -53,7 +35,7 @@ export default function AnalyzingPage() {
           {stageLabelFor(analysis.stageIndex)}
         </p>
         <p
-          className="m-0 truncate text-small text-ink-3"
+          className="m-0 max-w-full break-words text-small text-ink-3"
           title={analysis.filename}
         >
           {analysis.filename}

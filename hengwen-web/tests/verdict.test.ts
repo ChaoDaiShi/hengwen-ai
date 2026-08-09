@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { scoreToVerdict } from "./verdict";
+import { scoreToVerdict } from "../src/lib/verdict";
 
 describe("scoreToVerdict", () => {
   it("passes at or above 90", () => {

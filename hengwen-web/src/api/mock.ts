@@ -190,6 +190,9 @@ export function createMockReport(input: {
     wordCount: input.wordCount ?? 8000 + Math.floor(Math.random() * 6000),
     score: template.score,
     verdict: template.verdict,
-    issues: template.issues,
+    issues: template.issues.map((item) => ({
+      ...item,
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    })),
   };
 }

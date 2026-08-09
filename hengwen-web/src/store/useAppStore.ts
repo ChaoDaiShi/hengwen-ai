@@ -85,7 +85,11 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: "hengwen-settings",
-      partialize: (state) => ({ settings: state.settings }),
+      partialize: (state) => ({
+        settings: state.settings,
+        reports: state.reports,
+        analysis: state.analysis,
+      }),
     },
   ),
 );

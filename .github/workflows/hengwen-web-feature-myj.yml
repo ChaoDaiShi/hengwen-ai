@@ -1,0 +1,88 @@
+name: Hengwen Web CI and Auto Merge
+
+on:
+  push:
+    branches:
+      - feature/myj
+
+concurrency:
+  group: hengwen-web-feature-myj
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  ci:
+    name: Check hengwen-web
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: hengwen-web
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.17.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+          cache: pnpm
+          cache-dependency-path: hengwen-web/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Test
+        run: pnpm run test
+
+      - name: Check formatting
+        run: pnpm exec prettier --check src tests
+
+      - name: Build
+        run: pnpm run build
+
+  merge:
+    name: Merge feature/myj into main
+    needs: ci
+    if: ${{ needs.ci.result == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge tested feature commit
+        uses: actions/github-script@v7
+        env:
+          FEATURE_SHA: ${{ github.sha }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const { data: featureRef } = await github.rest.git.getRef({
+              owner,
+              repo,
+              ref: "heads/feature/myj",
+            });
+
+            if (featureRef.object.sha !== process.env.FEATURE_SHA) {
+              core.setFailed("feature/myj moved while CI was running; refusing to merge an untested commit.");
+              return;
+            }
+
+            const result = await github.rest.repos.merge({
+              owner,
+              repo,
+              base: "main",
+              head: process.env.FEATURE_SHA,
+              commit_message: "merge: feature/myj into main",
+            });
+
+            if (!result.data.merged) {
+              core.setFailed(result.data.message || "GitHub did not merge feature/myj into main.");
+            }
