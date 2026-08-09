@@ -2,11 +2,13 @@
 
 ## Mandatory Delivery Sequence
 
-每个实施类任务必须按以下顺序结束：
+每个实施类任务在开始开发前必须先同步远程，再按以下顺序执行：
 
 ```text
-VERIFY(PASS) -> STAGE -> REVIEW STAGED DIFF -> COMMIT -> PUSH -> DELIVER
+FETCH/PULL -> VERIFY(PASS) -> STAGE -> REVIEW STAGED DIFF -> COMMIT -> PUSH -> DELIVER
 ```
+
+开发开始前运行 `git fetch origin`，确认当前分支与远端无落后；分支有跟踪远端时，使用 `git pull --rebase` 同步。若远端和本地存在冲突，必须先解决或向用户报告，不得在过期基线继续开发。
 
 commit 和 push 都是完成条件，不是可选的后续建议。只完成本地 commit、尚未 push 的任务不得标记完成。
 

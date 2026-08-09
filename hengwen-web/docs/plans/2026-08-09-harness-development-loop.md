@@ -63,3 +63,11 @@
 - Create: `.harness/rules/version-control.md`
 
 将 `COMMIT -> PUSH` 加入 `VERIFY` 与 `DELIVER` 之间，要求仅暂存当前任务文件，并把 commit hash 与远端分支作为完成证据。
+
+### Task 7: Sync Before Development
+
+**Files:**
+
+- Modify: `.harness/rules/version-control.md`
+
+把 `FETCH/PULL` 加入每个实施类任务的开端，要求开发前与远端同步，避免基于过期 `main` 或过期的本地分支继续开发。
