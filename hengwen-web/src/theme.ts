@@ -15,7 +15,7 @@ const light = {
   colorBgContainer: "#ffffff",
   colorBorder: "#e6e3dd",
   colorBorderSecondary: "#e6e3dd",
-  borderRadius: 4,
+  borderRadius: 8,
   fontSize: 15,
   lineHeight: 1.7,
   controlHeight: 40,
@@ -36,7 +36,7 @@ const dark = {
   colorBgContainer: "#1e1d22",
   colorBorder: "#32302f",
   colorBorderSecondary: "#32302f",
-  borderRadius: 4,
+  borderRadius: 8,
   fontSize: 15,
   lineHeight: 1.7,
   controlHeight: 40,
@@ -46,17 +46,18 @@ export function buildTheme(isDark: boolean): ThemeConfig {
   const palette = isDark ? dark : light;
   return {
     algorithm: isDark ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
+    cssVar: { key: "hw" },
     token: {
       ...palette,
-      fontFamily:
-        "'Inter', 'PingFang SC', 'HarmonyOS Sans SC', 'Microsoft YaHei', system-ui, sans-serif",
+      fontFamily: "'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', serif",
       fontFamilyCode: "'JetBrains Mono', ui-monospace, 'SF Mono', monospace",
-      boxShadow: "0 1px 2px rgba(28,27,25,.04), 0 4px 12px rgba(28,27,25,.06)",
+      boxShadow: "var(--hw-shadow-paper)",
+      boxShadowSecondary: "var(--hw-shadow-paper)",
     },
     components: {
       Button: {
         fontWeight: 500,
-        borderRadius: 4,
+        borderRadius: 8,
       },
       Card: {
         borderRadiusLG: 8,
@@ -71,7 +72,7 @@ export function buildTheme(isDark: boolean): ThemeConfig {
         headerColor: palette.colorTextSecondary,
         headerSplitColor: "transparent",
         rowHoverBg: isDark ? "#2a2931" : "#f0eee9",
-        cellPaddingBlock: 12,
+        cellPaddingBlock: 14,
         cellPaddingInline: 16,
       },
       Tabs: {
@@ -81,7 +82,7 @@ export function buildTheme(isDark: boolean): ThemeConfig {
         itemHoverColor: palette.colorPrimary,
       },
       Tag: {
-        borderRadiusSM: 4,
+        borderRadiusSM: 8,
       },
       Progress: {
         defaultColor: palette.colorPrimary,

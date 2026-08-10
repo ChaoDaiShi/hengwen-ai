@@ -1,32 +1,51 @@
-# React + TypeScript + Vite
+# 衡文 Web
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+<p align="center">
+  <img src="public/hengwen.png" alt="衡文 favicon" width="128" height="128" />
+</p>
 
-Currently, two official plugins are available:
+衡文前端：面向正式文档的规范检查、质量审阅与修改建议界面。本目录是 `hengwen-web` 包的独立说明，仓库入口见 `../README.md`。
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 技术栈
 
-## React Compiler
+- React 19 + TypeScript
+- Vite 8 + Tailwind CSS 4
+- Ant Design 6
+- React Router 7
+- Zustand + persist
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 页面
 
-## Expanding the Oxlint configuration
+- `/` 首页：品牌区、上传入口、最近检查
+- `/analyzing` 分析中：进度条与当前阶段
+- `/report/:id` 报告页：得分、问题清单、原文 / 建议对照
+- `/history` 历史记录
+- `/settings` 设置
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## 开发
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+pnpm install
+pnpm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## 质量验证
+
+```bash
+pnpm run lint
+pnpm run test
+pnpm run build
+pnpm exec prettier --check src tests
+```
+
+## 目录
+
+```text
+src/
+├── components/   # 上传、得分、问题列表、状态标签
+├── hooks/        # 深色模式
+├── layout/       # 全局布局与导航
+├── lib/          # 业务工具与 mock 逻辑
+├── pages/        # 路由页面
+└── store/        # Zustand 全局状态
+```

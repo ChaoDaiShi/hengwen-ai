@@ -37,7 +37,7 @@ export default function ReportPage() {
         <h1 className="m-0 break-words font-serif text-display leading-[1.35] text-ink">
           {title}
         </h1>
-        <p className="m-0 text-small text-ink-2">
+        <p className="m-0 text-small tabular-nums text-ink-2">
           {report.filename} · 检查于 {formatDateTime(report.checkedAt)} ·{" "}
           {formatWordCount(report.wordCount)} 字
         </p>
