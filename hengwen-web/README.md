@@ -1,7 +1,7 @@
 # 衡文 Web
 
 <p align="center">
-  <img src="public/hengwen.png" alt="衡文 logo" width="128" height="128" />
+  <img src="public/favicon.svg" alt="衡文 favicon" width="128" height="128" />
 </p>
 
 衡文前端：面向正式文档的规范检查、质量审阅与修改建议界面。本目录是 `hengwen-web` 包的独立说明，仓库入口见 `../README.md`。

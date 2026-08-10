@@ -27,7 +27,7 @@ export default function AnalyzingPage() {
           aria-label="检查进度"
         >
           <div
-            className="h-full bg-accent transition-[width] duration-200 ease-out"
+            className="h-full bg-accent transition-[width] duration-fast ease-out"
             style={{ width: `${analysis.progress}%` }}
           />
         </div>

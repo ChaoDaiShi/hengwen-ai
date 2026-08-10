@@ -1,16 +1,59 @@
 import { useNavigate } from "react-router-dom";
-import { Empty, Table } from "antd";
-import type { ColumnsType } from "antd/es/table";
+import { Table } from "antd";
+import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
 import type { Report, Verdict } from "../types/report";
 import StatusTag from "../components/StatusTag";
 import { useAppStore } from "../store/useAppStore";
 import { formatDateTime } from "../lib/format";
 
 const emptyNode = (
-  <div className="py-16 text-center">
-    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="尚无检查记录" />
+  <div className="flex flex-col items-center gap-4 py-16 text-center">
+    <svg
+      width="40"
+      height="40"
+      viewBox="0 0 40 40"
+      fill="none"
+      aria-hidden="true"
+      className="text-ink-3"
+    >
+      <rect
+        x="9"
+        y="6"
+        width="22"
+        height="28"
+        rx="2"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M14 14h12M14 19h12M14 24h8"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+    <p className="m-0 text-body text-ink-3">尚无检查记录</p>
   </div>
 );
+
+const pagination: TablePaginationConfig = {
+  pageSize: 7,
+  hideOnSinglePage: true,
+  showSizeChanger: false,
+  className: "hw-pagination",
+  itemRender: (_page, type, originalElement) => {
+    if (type === "prev") {
+      return <span className="text-body text-ink-2">上一页</span>;
+    }
+    if (type === "next") {
+      return <span className="text-body text-ink-2">下一页</span>;
+    }
+    if (type === "jump-prev" || type === "jump-next") {
+      return <span className="px-2 text-ink-3">…</span>;
+    }
+    return originalElement;
+  },
+};
 
 export default function HistoryPage() {
   const navigate = useNavigate();
@@ -42,7 +85,7 @@ export default function HistoryPage() {
       key: "score",
       width: 100,
       render: (value: number) => (
-        <span className="font-mono text-body text-ink">{value}</span>
+        <span className="font-mono text-h2 tabular-nums text-ink">{value}</span>
       ),
     },
     {
@@ -59,7 +102,9 @@ export default function HistoryPage() {
       width: 180,
       responsive: ["lg"],
       render: (value: string) => (
-        <span className="text-small text-ink-2">{formatDateTime(value)}</span>
+        <span className="text-small tabular-nums text-ink-2">
+          {formatDateTime(value)}
+        </span>
       ),
     },
   ];
@@ -72,11 +117,7 @@ export default function HistoryPage() {
         columns={columns}
         dataSource={reports}
         locale={{ emptyText: emptyNode }}
-        pagination={{
-          pageSize: 7,
-          hideOnSinglePage: true,
-          showSizeChanger: false,
-        }}
+        pagination={pagination}
         onRow={(record) => ({
           onClick: () => navigate(`/report/${record.id}`),
           onKeyDown: (event) => {

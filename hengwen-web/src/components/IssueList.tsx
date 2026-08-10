@@ -93,11 +93,15 @@ export default function IssueList({ issues }: IssueListProps) {
             </span>
           </h3>
           <ul className="m-0 list-none p-0">
-            {group.items.map((issue) => {
+            {group.items.map((issue, index) => {
               const isOpen = expanded.has(issue.id);
               const parts = diffText(issue.original, issue.suggestion);
               return (
-                <li key={issue.id} className="border-b border-line">
+                <li
+                  key={issue.id}
+                  className="list-enter border-b border-line"
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
                   <button
                     type="button"
                     className="flex w-full min-h-[56px] items-center gap-3 bg-transparent px-2 py-2 text-left text-ink"

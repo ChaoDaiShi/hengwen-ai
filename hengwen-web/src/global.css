@@ -29,11 +29,17 @@
   --hw-shadow-paper:
     0 1px 2px rgba(28, 27, 25, 0.04), 0 4px 12px rgba(28, 27, 25, 0.06);
 
+  /* 动效 */
+  --hw-duration-micro: 150ms;
+  --hw-duration-fast: 240ms;
+  --hw-duration-score: 600ms;
+  --hw-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
   /* 字体 */
   --hw-font-sans:
     "Inter", "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", system-ui,
     sans-serif;
-  --hw-font-serif: "Source Han Serif SC", "Noto Serif SC", "Songti SC", serif;
+  --hw-font-serif: "Noto Serif SC", "Songti SC", "Source Han Serif SC", serif;
   --hw-font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
 
   color-scheme: light;
@@ -90,6 +96,11 @@
   --font-serif: var(--hw-font-serif);
   --font-mono: var(--hw-font-mono);
 
+  --duration-micro: var(--hw-duration-micro);
+  --duration-fast: var(--hw-duration-fast);
+  --duration-score: var(--hw-duration-score);
+  --ease-paper: var(--hw-ease-out);
+
   --radius-md: 8px;
 
   --shadow-paper: var(--hw-shadow-paper);
@@ -123,7 +134,7 @@
     min-height: 100svh;
     background: var(--bg-paper);
     color: var(--text-primary);
-    font-family: var(--font-sans);
+    font-family: var(--font-serif);
     font-size: 15px;
     line-height: 1.7;
     text-rendering: optimizeLegibility;
@@ -152,6 +163,37 @@
     outline-offset: 2px;
   }
 }
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes item-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.page-enter {
+  animation: page-in var(--hw-duration-fast) var(--hw-ease-out) both;
+}
+
+.list-enter {
+  animation: item-in var(--hw-duration-fast) var(--hw-ease-out) both;
+}
+
 /* antd Upload.Dragger —— 大留白虚线上传区（§6 Upload）
    注：必须置于层外，避免被 antd 无层样式覆盖。 */
 .upload-zone.ant-upload-wrapper .ant-upload-drag {
@@ -160,8 +202,8 @@
   border-radius: 8px;
   padding: 64px 24px;
   transition:
-    border-color 150ms ease-out,
-    background-color 150ms ease-out;
+    border-color var(--hw-duration-micro) ease-out,
+    background-color var(--hw-duration-micro) ease-out;
 }
 
 .upload-zone.ant-upload-wrapper .ant-upload-drag:hover,
@@ -173,11 +215,52 @@
   background: var(--accent-bg);
 }
 
+/* antd Pagination —— 纯文字分页，去掉默认边框与箭头（P0 ④） */
+.hw-pagination.ant-pagination {
+  margin-top: 24px;
+  justify-content: center;
+}
+
+.hw-pagination.ant-pagination .ant-pagination-item,
+.hw-pagination.ant-pagination .ant-pagination-prev,
+.hw-pagination.ant-pagination .ant-pagination-next,
+.hw-pagination.ant-pagination .ant-pagination-jump-prev,
+.hw-pagination.ant-pagination .ant-pagination-jump-next {
+  border: 0;
+  background: transparent;
+  font-family: var(--hw-font-serif);
+}
+
+.hw-pagination.ant-pagination .ant-pagination-item,
+.hw-pagination.ant-pagination .ant-pagination-prev,
+.hw-pagination.ant-pagination .ant-pagination-next {
+  min-width: 36px;
+  height: 40px;
+  line-height: 40px;
+}
+
+.hw-pagination.ant-pagination .ant-pagination-item a {
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.hw-pagination.ant-pagination .ant-pagination-item:hover a,
+.hw-pagination.ant-pagination .ant-pagination-item-active a {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.hw-pagination.ant-pagination .ant-pagination-disabled,
+.hw-pagination.ant-pagination .ant-pagination-disabled:hover {
+  color: var(--text-disabled);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0ms !important;
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0ms !important;
   }
