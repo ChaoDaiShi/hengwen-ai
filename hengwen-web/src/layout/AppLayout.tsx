@@ -13,9 +13,17 @@ export default function AppLayout() {
         <div className="mx-auto flex h-16 w-full max-w-[960px] items-center justify-between gap-8 px-12 max-md:h-14 max-md:gap-4 max-md:px-5">
           <NavLink
             to="/"
-            className="shrink-0 font-serif text-[20px] font-medium leading-[1.4] text-ink"
+            className="flex shrink-0 items-center gap-3 text-ink"
+            aria-label="衡文首页"
           >
-            衡文
+            <img
+              src="/hengwen.png"
+              alt=""
+              className="h-9 w-9 rounded-sm object-cover max-md:h-8 max-md:w-8"
+            />
+            <span className="font-serif text-[20px] font-medium leading-[1.4]">
+              衡文
+            </span>
           </NavLink>
           <nav className="flex gap-8 max-md:gap-4" aria-label="主导航">
             {NAV_ITEMS.map((item) => (

@@ -22,8 +22,16 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col">
-      <section className="pb-16 pt-24 text-center max-md:pb-12 max-md:pt-16">
-        <p className="m-0 text-h2 text-ink-2">衡量，然后修改</p>
+      <section className="pb-16 pt-16 text-center max-md:pb-12 max-md:pt-12">
+        <img
+          src="/hengwen.png"
+          alt="衡文"
+          className="mx-auto mb-8 h-28 w-28 rounded-[4px] object-cover max-md:h-24 max-md:w-24 max-md:mb-6"
+        />
+        <p className="m-0 text-h2 text-ink">衡量，然后修改</p>
+        <p className="mx-auto mt-4 max-w-[420px] text-body text-ink-2">
+          面向正式文档的规范检查、质量审阅与修改建议
+        </p>
       </section>
 
       <section className="mx-auto w-full max-w-[640px]">
