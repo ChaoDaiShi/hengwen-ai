@@ -1,0 +1,8 @@
+.env
+.env.*
+!.env.example
+
+storage/
+*.db
+*.sqlite
+*.sqlite3
