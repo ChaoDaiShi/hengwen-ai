@@ -15,6 +15,7 @@ from hengwen_api.api.v1.router import router as v1_router
 from hengwen_api.core.config import Settings, get_settings
 from hengwen_api.core.exceptions import AppError, ErrorCode
 from hengwen_api.core.logging import configure_logging
+from hengwen_api.db.session import create_engine_for_url, create_session_factory
 from hengwen_api.schemas.common import ErrorResponse
 
 logger = logging.getLogger(__name__)
@@ -55,6 +56,10 @@ def create_app(
         openapi_url="/api/openapi.json",
     )
     application.state.settings = resolved_settings
+    if session_factory is None:
+        engine = create_engine_for_url(resolved_settings.database_url)
+        session_factory = create_session_factory(engine)
+        application.state.engine = engine
     application.state.session_factory = session_factory
     application.add_middleware(
         CORSMiddleware,

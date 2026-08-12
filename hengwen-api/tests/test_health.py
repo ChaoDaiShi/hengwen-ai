@@ -1,6 +1,9 @@
+import logging
+
 from fastapi.testclient import TestClient
 
 from hengwen_api.core.config import Settings
+from hengwen_api.core.logging import LOG_FORMAT, RequestContextFormatter
 from hengwen_api.main import create_app
 
 
@@ -33,3 +36,19 @@ def test_cors_origins_are_parsed_from_csv() -> None:
         "http://localhost:5173",
         "http://127.0.0.1:5173",
     ]
+
+
+def test_log_formatter_supplies_request_id_for_third_party_records() -> None:
+    record = logging.LogRecord(
+        name="httpx",
+        level=logging.INFO,
+        pathname=__file__,
+        lineno=1,
+        msg="request completed",
+        args=(),
+        exc_info=None,
+    )
+
+    rendered = RequestContextFormatter(LOG_FORMAT).format(record)
+
+    assert "request_id=-" in rendered
