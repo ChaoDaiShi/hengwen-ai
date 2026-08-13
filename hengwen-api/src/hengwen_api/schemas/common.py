@@ -1,0 +1,33 @@
+from datetime import UTC, datetime
+from typing import Annotated, Any
+
+from pydantic import AfterValidator, BaseModel, ConfigDict
+
+
+def _ensure_utc(value: datetime) -> datetime:
+    if value.tzinfo is None:
+        return value.replace(tzinfo=UTC)
+    return value.astimezone(UTC)
+
+
+UtcDateTime = Annotated[datetime, AfterValidator(_ensure_utc)]
+
+
+def to_camel(value: str) -> str:
+    head, *tail = value.split("_")
+    return head + "".join(part.capitalize() for part in tail)
+
+
+class CamelModel(BaseModel):
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        populate_by_name=True,
+        from_attributes=True,
+    )
+
+
+class ErrorResponse(CamelModel):
+    code: str
+    message: str
+    details: Any = None
+    request_id: str
