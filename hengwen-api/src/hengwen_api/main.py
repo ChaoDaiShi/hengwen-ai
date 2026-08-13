@@ -36,13 +36,18 @@ def _error_response(
     message: str,
     details: Any = None,
 ) -> JSONResponse:
+    request_id = _request_id(request)
     content = ErrorResponse(
         code=code,
         message=message,
         details=details,
-        request_id=_request_id(request),
+        request_id=request_id,
     ).model_dump(by_alias=True)
-    return JSONResponse(status_code=status_code, content=content)
+    return JSONResponse(
+        status_code=status_code,
+        content=content,
+        headers={"x-request-id": request_id},
+    )
 
 
 def create_app(
@@ -144,7 +149,7 @@ def create_app(
 
     @application.exception_handler(Exception)
     async def handle_unexpected_error(request: Request, exc: Exception) -> JSONResponse:
-        logger.exception(
+        logger.error(
             "unhandled request error exception=%s",
             type(exc).__name__,
             extra={"request_id": _request_id(request)},
