@@ -10,6 +10,7 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, Response
+from sqlalchemy.exc import SQLAlchemyError
 
 from hengwen_api import __version__
 from hengwen_api.api.v1.router import router as v1_router
@@ -122,6 +123,23 @@ def create_app(
             code=ErrorCode.VALIDATION_ERROR,
             message="请求参数无效",
             details=exc.errors(),
+        )
+
+    @application.exception_handler(SQLAlchemyError)
+    async def handle_database_error(
+        request: Request,
+        exc: SQLAlchemyError,
+    ) -> JSONResponse:
+        logger.error(
+            "database request error exception=%s",
+            type(exc).__name__,
+            extra={"request_id": _request_id(request)},
+        )
+        return _error_response(
+            request,
+            status_code=500,
+            code=ErrorCode.DATABASE_ERROR,
+            message="数据库操作失败",
         )
 
     @application.exception_handler(Exception)
