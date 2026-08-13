@@ -10,7 +10,7 @@ from hengwen_api.core.config import Settings
 from hengwen_api.db.base import Base
 from hengwen_api.db.session import create_engine_for_url, create_session_factory
 from hengwen_api.main import create_app
-from tests.factories import build_docx_bytes
+from tests.factories import DOCX_MIME, build_docx_bytes, build_structured_docx
 
 
 @pytest.fixture
@@ -80,3 +80,18 @@ def small_limit_client(
         create_app(settings=small_settings, session_factory=session_factory)
     ) as test_client:
         yield test_client
+
+
+@pytest.fixture
+def valid_thesis_docx(tmp_path: Path) -> bytes:
+    return build_structured_docx(tmp_path / "thesis.docx").read_bytes()
+
+
+@pytest.fixture
+def uploaded_document_id(client: TestClient, valid_thesis_docx: bytes) -> int:
+    response = client.post(
+        "/api/v1/documents",
+        files={"file": ("毕业论文.docx", valid_thesis_docx, DOCX_MIME)},
+    )
+    assert response.status_code == 201
+    return int(response.json()["id"])

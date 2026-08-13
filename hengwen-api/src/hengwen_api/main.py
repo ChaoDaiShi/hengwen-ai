@@ -1,6 +1,7 @@
 import logging
 import time
 from collections.abc import Awaitable, Callable
+from contextlib import asynccontextmanager
 from typing import Any
 from uuid import uuid4
 
@@ -17,6 +18,7 @@ from hengwen_api.core.exceptions import AppError, ErrorCode
 from hengwen_api.core.logging import configure_logging
 from hengwen_api.db.session import create_engine_for_url, create_session_factory
 from hengwen_api.schemas.common import ErrorResponse
+from hengwen_api.workers.review_worker import recover_stale_tasks
 
 logger = logging.getLogger(__name__)
 
@@ -48,18 +50,28 @@ def create_app(
 ) -> FastAPI:
     resolved_settings = settings or get_settings()
     configure_logging(resolved_settings.log_level)
+    owned_engine = None
+    if session_factory is None:
+        owned_engine = create_engine_for_url(resolved_settings.database_url)
+        session_factory = create_session_factory(owned_engine)
+
+    @asynccontextmanager
+    async def lifespan(_application: FastAPI):
+        recover_stale_tasks(session_factory)
+        yield
+        if owned_engine is not None:
+            owned_engine.dispose()
+
     application = FastAPI(
         title="衡文 AI API",
         version=__version__,
         docs_url="/api/docs",
         redoc_url="/api/redoc",
         openapi_url="/api/openapi.json",
+        lifespan=lifespan,
     )
     application.state.settings = resolved_settings
-    if session_factory is None:
-        engine = create_engine_for_url(resolved_settings.database_url)
-        session_factory = create_session_factory(engine)
-        application.state.engine = engine
+    application.state.engine = owned_engine
     application.state.session_factory = session_factory
     application.add_middleware(
         CORSMiddleware,
