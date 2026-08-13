@@ -1,0 +1,1 @@
+"""Independent deterministic document rules."""
