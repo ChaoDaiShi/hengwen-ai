@@ -1,8 +1,10 @@
 import logging
+import time
 from pathlib import Path
 from uuid import uuid4
 
 from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
 
 from hengwen_api.ai.reviewer import AIReviewer, NullAIReviewer
 from hengwen_api.core.config import Settings
@@ -68,7 +70,24 @@ class ReviewWorker:
                 event_type=event_type,
                 message=message or default_message,
             )
+            if event_type != "task.progress":
+                self.emitter.emit(
+                    session,
+                    task,
+                    event_type="task.progress",
+                    message=message or default_message,
+                )
             session.commit()
+
+    def _log_context(self, task_id: str) -> tuple[int | str, str]:
+        try:
+            with self.session_factory() as session:
+                task = ReviewRepository(session).get_task(task_id)
+                if task is not None:
+                    return task.document_id, task.stage
+        except SQLAlchemyError:
+            return "-", "unknown"
+        return "-", "unknown"
 
     def _load_document(self, task_id: str) -> tuple[DocumentModel, int]:
         with self.session_factory() as session:
@@ -169,6 +188,7 @@ class ReviewWorker:
             session.commit()
 
     def run(self, task_id: str) -> None:
+        started_at = time.perf_counter()
         try:
             self._transition(
                 task_id,
@@ -242,9 +262,14 @@ class ReviewWorker:
             )
             self._complete(task_id, word_count=word_count, issues=issues)
         except AppError as exc:
+            document_id, stage = self._log_context(task_id)
             logger.warning(
-                "review failed task_id=%s exception=%s",
+                "review failed task_id=%s document_id=%s stage=%s "
+                "duration_ms=%.2f exception=%s",
                 task_id,
+                document_id,
+                stage,
+                (time.perf_counter() - started_at) * 1000,
                 type(exc).__name__,
                 extra={"request_id": "-"},
             )
@@ -253,10 +278,15 @@ class ReviewWorker:
                 reason="parse_failed",
                 exception_name=type(exc).__name__,
             )
-        except Exception as exc:  # worker boundary must persist a terminal event
-            logger.exception(
-                "review failed task_id=%s exception=%s",
+        except Exception as exc:  # noqa: BLE001  # worker boundary persists failure
+            document_id, stage = self._log_context(task_id)
+            logger.error(
+                "review failed task_id=%s document_id=%s stage=%s "
+                "duration_ms=%.2f exception=%s",
                 task_id,
+                document_id,
+                stage,
+                (time.perf_counter() - started_at) * 1000,
                 type(exc).__name__,
                 extra={"request_id": "-"},
             )

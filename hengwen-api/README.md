@@ -21,6 +21,7 @@ uv sync
 Copy-Item .env.example .env
 uv run alembic upgrade head
 uv run hengwen-api
+# 开发时也可以使用：uv run uvicorn hengwen_api.main:app --reload
 ```
 
 服务默认监听 `http://127.0.0.1:8000`：
@@ -86,7 +87,7 @@ curl -X POST http://127.0.0.1:8000/api/v1/review-tasks \
   }'
 ```
 
-成功返回 `202`。任务在同一服务进程的后台执行，状态和事件均持久化；服务重启时，未完成任务会恢复执行。
+成功返回 `202`。任务在同一服务进程的后台执行，状态和事件均持久化。服务重启时，遗留的未完成任务会被安全标记为失败并写入终态事件，客户端可据此重新提交；MVP 不自动续跑中断任务。
 
 ### 3. 查询状态与订阅事件
 

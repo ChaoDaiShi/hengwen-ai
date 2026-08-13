@@ -1,4 +1,5 @@
 import json
+import logging
 from pathlib import Path
 
 from sqlalchemy.orm import Session, sessionmaker
@@ -13,6 +14,14 @@ from hengwen_api.schemas.review import ReviewSettingsCreate
 from hengwen_api.services.review_service import ReviewService
 from hengwen_api.workers.review_worker import ReviewWorker, recover_stale_tasks
 from tests.factories import build_structured_docx
+
+WORKER_LOG_SECRET = "mysql+pymysql://root:WORKER-SECRET@db.example/hengwen"
+
+
+class FailingAIReviewer:
+    def review(self, document):
+        del document
+        raise RuntimeError(WORKER_LOG_SECRET)
 
 
 def store_document(
@@ -88,6 +97,7 @@ def test_worker_completes_task_and_persists_ordered_events(
         "completed",
     }
     assert [event.id for event in events] == sorted(event.id for event in events)
+    assert "task.progress" in {event.event_type for event in events}
 
 
 def test_plagiarism_request_records_unsupported_event_without_fake_result(
@@ -184,3 +194,30 @@ def test_emitter_uses_callers_transaction(
 
     with session_factory() as session:
         assert ReviewRepository(session).list_events("rvw_rollback", after_id=0) == []
+
+
+def test_worker_logs_exception_type_without_sensitive_exception_text(
+    session_factory: sessionmaker[Session],
+    settings: Settings,
+    caplog,
+) -> None:
+    document = store_document(session_factory, settings)
+    task = create_review_task(session_factory, document)
+    caplog.set_level(logging.ERROR)
+
+    ReviewWorker(
+        session_factory,
+        settings,
+        ai_reviewer=FailingAIReviewer(),
+    ).run(task.task_id)
+
+    with session_factory() as session:
+        saved = ReviewRepository(session).get_task(task.task_id)
+    assert saved is not None
+    assert saved.status == "failed"
+    assert "RuntimeError" in caplog.text
+    assert f"task_id={task.task_id}" in caplog.text
+    assert f"document_id={document.id}" in caplog.text
+    assert "stage=suggestion" in caplog.text
+    assert "duration_ms=" in caplog.text
+    assert WORKER_LOG_SECRET not in caplog.text

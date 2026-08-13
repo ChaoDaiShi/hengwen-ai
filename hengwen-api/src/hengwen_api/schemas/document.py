@@ -1,6 +1,4 @@
-from datetime import datetime
-
-from hengwen_api.schemas.common import CamelModel
+from hengwen_api.schemas.common import CamelModel, UtcDateTime
 
 
 class DocumentResponse(CamelModel):
@@ -10,4 +8,4 @@ class DocumentResponse(CamelModel):
     file_size: int
     file_hash: str
     status: str
-    created_at: datetime
+    created_at: UtcDateTime

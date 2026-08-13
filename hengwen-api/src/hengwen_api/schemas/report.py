@@ -1,9 +1,8 @@
-from datetime import datetime
 from typing import Literal
 
 from pydantic import Field
 
-from hengwen_api.schemas.common import CamelModel
+from hengwen_api.schemas.common import CamelModel, UtcDateTime
 
 FileType = Literal[".docx", ".pdf", ".md"]
 
@@ -22,7 +21,7 @@ class ReportResponse(CamelModel):
     id: str
     filename: str
     file_type: FileType
-    checked_at: datetime
+    checked_at: UtcDateTime
     word_count: int
     score: int
     verdict: Literal["pass", "pending", "fail"]

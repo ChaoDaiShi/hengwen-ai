@@ -76,6 +76,14 @@ def _margin_points(value: object | None) -> float | None:
     return float(value.pt) if value is not None and hasattr(value, "pt") else None
 
 
+def _inline_shape_relationship_id(shape: object) -> str | None:
+    inline = getattr(shape, "_inline", None)
+    if inline is None:
+        return None
+    relationship_ids = inline.xpath(".//a:blip/@r:embed")
+    return str(relationship_ids[0]) if relationship_ids else None
+
+
 def parse_docx(path: Path) -> DocumentModel:
     try:
         document = load_docx(str(path))
@@ -145,9 +153,10 @@ def parse_docx(path: Path) -> DocumentModel:
     figures = [
         FigureModel(
             index=index,
+            relationship_id=_inline_shape_relationship_id(shape),
             caption=captions["图"][index] if index < len(captions["图"]) else None,
         )
-        for index, _shape in enumerate(document.inline_shapes)
+        for index, shape in enumerate(document.inline_shapes)
     ]
     sections = [
         SectionModel(

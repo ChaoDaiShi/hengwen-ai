@@ -1,9 +1,8 @@
-from datetime import datetime
 from typing import Any, Literal
 
 from pydantic import Field
 
-from hengwen_api.schemas.common import CamelModel
+from hengwen_api.schemas.common import CamelModel, UtcDateTime
 
 
 class ReviewSettingsCreate(CamelModel):
@@ -30,7 +29,7 @@ class AnalysisTaskResponse(CamelModel):
     file_type: Literal[".docx", ".pdf", ".md"]
     stage_index: int
     progress: int
-    started_at: datetime
+    started_at: UtcDateTime
 
 
 class TaskStatusResponse(AnalysisTaskResponse):

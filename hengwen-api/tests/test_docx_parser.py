@@ -5,7 +5,7 @@ from docx import Document as DocxDocument
 
 from hengwen_api.core.exceptions import AppError, ErrorCode
 from hengwen_api.document_engine.parser import parse_document
-from tests.factories import build_structured_docx
+from tests.factories import build_docx_with_inline_image, build_structured_docx
 
 
 def test_docx_parser_extracts_runs_headings_tables_and_sections(
@@ -39,6 +39,16 @@ def test_docx_parser_rejects_empty_document(tmp_path: Path) -> None:
         parse_document(path, ".docx")
 
     assert captured.value.code == ErrorCode.INVALID_DOCUMENT
+
+
+def test_docx_parser_preserves_inline_image_relationship_id(tmp_path: Path) -> None:
+    path = build_docx_with_inline_image(tmp_path / "with-image.docx")
+
+    model = parse_document(path, ".docx")
+
+    assert len(model.figures) == 1
+    assert model.figures[0].relationship_id is not None
+    assert model.figures[0].relationship_id.startswith("rId")
 
 
 def test_docx_parser_rejects_corrupt_package(tmp_path: Path) -> None:

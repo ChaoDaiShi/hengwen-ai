@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from fastapi.testclient import TestClient
 
 REVIEW_SETTINGS = {
@@ -85,6 +87,8 @@ def test_report_detail_matches_react_contract(
     assert response.json()["filename"] == "毕业论文.docx"
     assert response.json()["wordCount"] > 0
     assert response.json()["issues"]
+    checked_at = datetime.fromisoformat(response.json()["checkedAt"])
+    assert checked_at.utcoffset() == timedelta(0)
     assert set(response.json()["issues"][0]) == {
         "id",
         "severity",

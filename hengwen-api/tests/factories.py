@@ -1,3 +1,4 @@
+import base64
 from io import BytesIO
 from pathlib import Path
 
@@ -7,6 +8,9 @@ from docx.oxml.ns import qn
 from docx.shared import Inches, Pt
 
 DOCX_MIME = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+ONE_PIXEL_PNG = base64.b64decode(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
+)
 
 
 def build_docx_bytes(*paragraphs: str) -> bytes:
@@ -40,6 +44,17 @@ def build_structured_docx(path: Path) -> Path:
     section.top_margin = Inches(1)
     section.header.paragraphs[0].text = "衡文测试"
     section.footer.paragraphs[0].text = "第 1 页"
+    document.save(path)
+    return path
+
+
+def build_docx_with_inline_image(path: Path) -> Path:
+    image_path = path.with_suffix(".png")
+    image_path.write_bytes(ONE_PIXEL_PNG)
+    document = DocxDocument()
+    document.add_heading("含图片的测试论文", level=0)
+    document.add_paragraph("正文内容")
+    document.add_picture(str(image_path), width=Inches(1))
     document.save(path)
     return path
 
